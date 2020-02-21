@@ -1,3 +1,4 @@
+from typing import Dict, List, Tuple
 from room import Room
 import random
 import math

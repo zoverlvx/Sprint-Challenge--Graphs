@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from world import World
+from utils import Queue, Stack, Graph, reverse_dirs
 
 import random
 from ast import literal_eval
@@ -29,7 +30,43 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+def get_current_room(path):
+    for d in path:
+        player.travel(d)
 
+def find_unexplored_room():
+    q = Queue()
+    for d in player.current_room.get_exits():
+        q.enqueue([(player.current_room, d)])
+    visited = set()
+    while q.size:
+        path = q.dequeue()
+        curr_room = path[-1][0]
+        if "?" in gr.rooms[curr_room].values():
+            return [d for _, d in path][1:]
+        elif curr_room not in visited:
+            visited.add(curr_room)
+            for direction in curr_room.get_exits():
+                next_room = curr_room.get_room_in_direction(direction)
+                q.enqueue(
+                    path + [(next_room, direction)]
+                )
+    return None
+
+gr = Graph()
+for room in world.rooms.values():
+    gr.add_vertex(room)
+
+while True:
+    if not any("?" in d.values() for d in gr.rooms.values()):
+        break
+    linear_dir = gr.go_in_direction_until_dead_end(player.current_room)
+    get_current_room(linear_dir)
+    traversal_path += linear_dir
+    path_to_unexplored_room = find_unexplored_room()
+    if path_to_unexplored_room is not None:
+        traversal_path += path_to_unexplored_room
+        get_current_room(path_to_unexplored_room)
 
 # TRAVERSAL TEST
 visited_rooms = set()

@@ -1,7 +1,22 @@
 # Implement a class to hold room information. This should have name and
 # description attributes.
+from __future__ import annotations
+from typing import Union, TypeVar, List
+
+N = TypeVar("n")
+S = TypeVar("s")
+E = TypeVar("e")
+W = TypeVar("w")
+
 class Room:
-    def __init__(self, name, description, id=0, x=None, y=None):
+    def __init__(
+        self, 
+        name: str, 
+        description: str, 
+        id: int = 0, 
+        x=None, 
+        y=None
+    ):
         self.id = id
         self.name = name
         self.description = description
@@ -11,11 +26,14 @@ class Room:
         self.w_to = None
         self.x = x
         self.y = y
-    def __str__(self):
+    
+    def __str__(self) -> str:
         return f"\n-------------------\n\n{self.name}\n\n   {self.description}\n\n{self.get_exits_string()}\n"
+    
     def print_room_description(self, player):
         print(str(self))
-    def get_exits(self):
+    
+    def get_exits(self) -> List[str]:
         exits = []
         if self.n_to is not None:
             exits.append("n")
@@ -26,9 +44,12 @@ class Room:
         if self.e_to is not None:
             exits.append("e")
         return exits
-    def get_exits_string(self):
+    
+    def get_exits_string(self) -> str:
         return f"Exits: [{', '.join(self.get_exits())}]"
-    def connect_rooms(self, direction, connecting_room):
+    
+    def connect_rooms(self, direction: Union[N, S, E, W], connecting_room:
+    Room) -> None:
         if direction == "n":
             self.n_to = connecting_room
             connecting_room.s_to = self
@@ -44,7 +65,8 @@ class Room:
         else:
             print("INVALID ROOM CONNECTION")
             return None
-    def get_room_in_direction(self, direction):
+
+    def get_room_in_direction(self, direction: Union[N, S, E, W]) -> Room:
         if direction == "n":
             return self.n_to
         elif direction == "s":
@@ -55,5 +77,6 @@ class Room:
             return self.w_to
         else:
             return None
+    
     def get_coords(self):
         return [self.x, self.y]
