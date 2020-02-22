@@ -4,13 +4,15 @@ import random
 import math
 
 """
-why won't it work?!
 https://docs.python.org/3/library/typing.html#type-aliases
 """
-RoomCoords = Tuple[int, int]
-RoomConnections = Dict[str, int]
-RoomGraph = Dict[int, List[Union[RoomCoords, RoomConnections]]]
 
+# room coordinates
+RoomCoords = Tuple[int, int]
+# direction[e, w, n, s] of other room and number of other room
+RoomConnections = Dict[str, int]
+# graph of rooms
+RoomGraph = Dict[int, List[Union[RoomCoords, RoomConnections]]]
 
 class World:
     def __init__(self):
@@ -26,14 +28,34 @@ class World:
         rooms = [None] * num_rooms
         grid_size = 1
         for i in range(0, num_rooms):
+
+            # get the x coordinate
             x = room_graph[i][0][0]
+            
+            # get the max grid size out of the default grid size, x coordinate,
+            # and y coordinate
             grid_size = max(grid_size, room_graph[i][0][0], room_graph[i][0][1])
-            self.rooms[i] = Room(f"Room {i}", f"({room_graph[i][0][0]},{room_graph[i][0][1]})",i, room_graph[i][0][0], room_graph[i][0][1])
+
+            # set the room at index of i with a Room object
+            self.rooms[i] = Room(
+                f"Room {i}", 
+                f"({room_graph[i][0][0]},{room_graph[i][0][1]})",
+                i, 
+                room_graph[i][0][0], 
+                room_graph[i][0][1]
+            )
+            
         self.room_grid = []
+
+        # add 1 to whatever the max grid_size ends up being
         grid_size += 1
+        # lock it in
         self.grid_size = grid_size
+
         for i in range(0, grid_size):
+            # create the grid layout
             self.room_grid.append([None] * grid_size)
+            
         for room_id in room_graph:
             room = self.rooms[room_id]
             self.room_grid[room.x][room.y] = room
