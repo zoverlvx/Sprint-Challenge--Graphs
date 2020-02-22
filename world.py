@@ -1,7 +1,16 @@
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 from room import Room
 import random
 import math
+
+"""
+why won't it work?!
+https://docs.python.org/3/library/typing.html#type-aliases
+"""
+RoomCoords = Tuple[int, int]
+RoomConnections = Dict[str, int]
+RoomGraph = Dict[int, List[Union[RoomCoords, RoomConnections]]]
+
 
 class World:
     def __init__(self):
@@ -9,8 +18,11 @@ class World:
         self.rooms = {}
         self.room_grid = []
         self.grid_size = 0
-    def load_graph(self, room_graph):
+    def load_graph(self, room_graph: RoomGraph):
+        # length of the dict/iterable
         num_rooms = len(room_graph)
+        # creates a list with None in each index
+        # by the number of rooms that exist
         rooms = [None] * num_rooms
         grid_size = 1
         for i in range(0, num_rooms):
